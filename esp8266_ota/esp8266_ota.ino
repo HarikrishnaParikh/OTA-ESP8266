@@ -6,9 +6,9 @@
 BearSSL::CertStore certStore;
 #include <time.h>
 
-const String FirmwareVer="1.9";
-#define URL_fw_Version "/programmer131/otaFiles/master/version.txt"
-#define URL_fw_Bin "https://raw.githubusercontent.com/programmer131/otaFiles/master/firmware.bin"
+const String FirmwareVer="2.0";
+#define URL_fw_Version "/HarikrishnaParikh/OTA-ESP8266/tree/master/bin_version.txt"
+#define URL_fw_Bin "https://raw.githubusercontent.com/HarikrishnaParikh/OTA-ESP8266/tree/master/esp8266_ota.ino.d1_mini.bin"
 const char* host = "raw.githubusercontent.com";
 const int httpsPort = 443;
 void connect_wifi();
@@ -41,7 +41,7 @@ void connect_wifi()
   Serial.println("Connected to WiFi");
 }
 
-void setClock() {
+/*void setClock() {
    // Set time via NTP, as required for x.509 validation
   configTime(3 * 3600, 0, "pool.ntp.org", "time.nist.gov");
   Serial.print("Waiting for NTP time sync: ");
@@ -51,7 +51,7 @@ void setClock() {
     Serial.print(".");
     now = time(nullptr);
   }
-}
+}*/
   
 void FirmwareUpdate()
 { WiFiClientSecure client;
@@ -93,14 +93,7 @@ void FirmwareUpdate()
 
  void repeatedCall()
 {   unsigned long currentMillis = millis();
-    if ((currentMillis - previousMillis) >= interval) 
-    { // save the last time you blinked the LED
-      previousMillis = currentMillis;
-      setClock();
-      FirmwareUpdate();
-    }
-    if ((currentMillis - previousMillis_2) >= mini_interval) 
-    { static int idle_counter=0;
+    static int idle_counter=0;
       previousMillis_2 = currentMillis;    
       Serial.print(" Active fw version:");
       Serial.println(FirmwareVer);
@@ -112,26 +105,28 @@ void FirmwareUpdate()
         digitalWrite(01, LOW);
       if(WiFi.status() == !WL_CONNECTED) 
         connect_wifi();
-    }
  }
 
   
 void setup()
 {
-  Serial.begin(115200);
+  Serial.begin(9600);
   Serial.println("");
   Serial.println("Start");
   WiFi.mode(WIFI_STA);
   connect_wifi();  
-  setClock();
-  pinMode(01, OUTPUT);
-  
+  //setClock();
+  Serial.println("St2");
+  //pinMode(1, OUTPUT);
+  Serial.println("St3");
 }
 void loop()
-{
+{ static int i;
+  Serial.print("St4");Serial.println(i,DEC);
+  delay(1000);
   repeatedCall();    
-  digitalWrite(01, HIGH);
+ /* digitalWrite(1, HIGH);
   delay(1000);
-  digitalWrite(01, LOW);
-  delay(1000);
+  digitalWrite(1, LOW);
+  delay(1000);*/
 }
