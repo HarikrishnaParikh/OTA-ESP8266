@@ -6,7 +6,7 @@
 BearSSL::CertStore certStore;
 #include <time.h>
 
-const String FirmwareVer="2.0";
+const String FirmwareVer="2.1";
 #define URL_fw_Version "/HarikrishnaParikh/OTA-ESP8266/tree/master/bin_version.txt"
 #define URL_fw_Bin "https://raw.githubusercontent.com/HarikrishnaParikh/OTA-ESP8266/tree/master/esp8266_ota.ino.d1_mini.bin"
 const char* host = "raw.githubusercontent.com";
@@ -31,14 +31,17 @@ const char* ssid = "M31";
 const char* password = "tyye5587";
 
 void connect_wifi()
-{
+{ int i=0;
   WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED)
+  while (WiFi.status() != WL_CONNECTED && i<20)
   {
     delay(500);
-    Serial.print("O");
-  }                                   
-  Serial.println("Connected to WiFi");
+    Serial.print(i++,DEC);Serial.print(".");
+  }         
+  if(WiFi.status() == WL_CONNECTED)                          
+    Serial.println("Connected to WiFi");
+  else 
+    Serial.println("Connected to WiFi");
 }
 
 /*void setClock() {
@@ -104,7 +107,9 @@ void FirmwareUpdate()
       else 
         digitalWrite(01, LOW);
       if(WiFi.status() == !WL_CONNECTED) 
-        connect_wifi();
+      connect_wifi();
+      if(WiFi.status() == WL_CONNECTED) 
+      FirmwareUpdate();
  }
 
   
@@ -122,7 +127,7 @@ void setup()
 }
 void loop()
 { static int i;
-  Serial.print("St4");Serial.println(i,DEC);
+  Serial.print("St4");Serial.println(i++,DEC);
   delay(1000);
   repeatedCall();    
  /* digitalWrite(1, HIGH);
