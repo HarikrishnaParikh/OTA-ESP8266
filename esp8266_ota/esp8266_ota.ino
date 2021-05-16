@@ -6,11 +6,11 @@
 BearSSL::CertStore certStore;
 #include <time.h>
 
-const String FirmwareVer="2.1";
-#define URL_fw_Version "/HarikrishnaParikh/OTA-ESP8266/tree/master/bin_version.txt"
-#define URL_fw_Bin "https://raw.githubusercontent.com/HarikrishnaParikh/OTA-ESP8266/tree/master/esp8266_ota.ino.d1_mini.bin"
-const char* host = "raw.githubusercontent.com";
-const int httpsPort = 443;
+const String FirmwareVer="2.0";
+#define URL_fw_Version "/HarikrishnaParikh/OTA-ESP8266/blob/master/bin_version.txt"
+#define URL_fw_Bin "https://github.com/HarikrishnaParikh/OTA-ESP8266/blob/master/esp8266_ota.ino.d1_mini.bin"
+const char* host = "github.com";
+const int httpsPort = 80;
 void connect_wifi();
 unsigned long previousMillis_2 = 0;
 unsigned long previousMillis = 0;        // will store last time LED was updated
@@ -59,8 +59,10 @@ void connect_wifi()
 void FirmwareUpdate()
 { WiFiClientSecure client;
   client.setTrustAnchors(&cert);
-  if (!client.connect(host, httpsPort)) 
-  { Serial.println("Connection failed");
+ if (!client.connect(host,httpsPort)) 
+  { Serial.println(host);
+    Serial.println(httpsPort,DEC);
+    Serial.println("ABCD");
     return;
   }
   client.print(String("GET ") + URL_fw_Version + " HTTP/1.1\r\n" +
@@ -70,7 +72,7 @@ void FirmwareUpdate()
   while (client.connected()) 
   { String line = client.readStringUntil('\n');
     if (line == "\r") 
-    { //Serial.println("Headers received");
+    { Serial.println("Headers received");
       break;
     }
   }
@@ -102,12 +104,12 @@ void FirmwareUpdate()
       Serial.println(FirmwareVer);
       Serial.print("Idle Loop....");
       Serial.println(idle_counter++);
-      if(idle_counter%2==0)
+      /*if(idle_counter%2==0)
         digitalWrite(01, HIGH);
       else 
         digitalWrite(01, LOW);
       if(WiFi.status() == !WL_CONNECTED) 
-      connect_wifi();
+      connect_wifi();*/
       if(WiFi.status() == WL_CONNECTED) 
       FirmwareUpdate();
  }
